@@ -21,30 +21,105 @@ document.addEventListener("DOMContentLoaded", () => {
       mangle: false,
     })
   }
+  initMobileMenu()
+  addFadeInAnimations()
+  loadGallery()
 })
 
+function initMobileMenu() {
+  const menuBtn = document.getElementById("mobile-menu-btn")
+  const mobileMenu = document.getElementById("mobile-menu")
+
+  if (menuBtn) {
+    menuBtn.addEventListener("click", toggleMobileMenu)
+  }
+}
+
+function toggleMobileMenu() {
+  const mobileMenu = document.getElementById("mobile-menu")
+  const menuIcon = document.getElementById("menu-icon")
+  const closeIcon = document.getElementById("close-icon")
+
+  mobileMenu.classList.toggle("hidden")
+  menuIcon.classList.toggle("hidden")
+  closeIcon.classList.toggle("hidden")
+}
+
+function addFadeInAnimations() {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("fade-in-visible")
+        }
+      })
+    },
+    { threshold: 0.1 },
+  )
+
+  document.querySelectorAll(".fade-in").forEach((el) => {
+    observer.observe(el)
+  })
+}
+
 function switchMainTab(tabName) {
-  document.querySelectorAll(".main-tab-content").forEach((content) => {
-    content.classList.add("hidden")
+  const allContents = document.querySelectorAll(".main-tab-content")
+  const targetContent = document.getElementById(`main-content-${tabName}`)
+
+  // Fade out current content
+  allContents.forEach((content) => {
+    if (!content.classList.contains("hidden")) {
+      content.style.opacity = "0"
+      content.style.transform = "translateX(-20px)"
+      setTimeout(() => {
+        content.classList.add("hidden")
+        content.style.opacity = ""
+        content.style.transform = ""
+      }, 300)
+    }
   })
 
+  // Update tab buttons
   document.querySelectorAll(".main-tab-button").forEach((button) => {
     button.classList.remove("border-purple-500", "text-purple-500")
     button.classList.add("border-transparent", "text-gray-400")
   })
 
-  document.getElementById(`main-content-${tabName}`).classList.remove("hidden")
+  // Fade in new content
+  setTimeout(() => {
+    targetContent.classList.remove("hidden")
+    targetContent.style.opacity = "0"
+    targetContent.style.transform = "translateX(20px)"
+    targetContent.style.transition = "opacity 0.4s ease-out, transform 0.4s ease-out"
+
+    requestAnimationFrame(() => {
+      targetContent.style.opacity = "1"
+      targetContent.style.transform = "translateX(0)"
+    })
+  }, 300)
 
   const activeTab = document.getElementById(`main-tab-${tabName}`)
-  activeTab.classList.add("border-purple-500", "text-purple-500")
-  activeTab.classList.remove("border-transparent", "text-gray-400")
+  if (activeTab) {
+    activeTab.classList.add("border-purple-500", "text-purple-500")
+    activeTab.classList.remove("border-transparent", "text-gray-400")
+  }
 }
 
-// Tab Switching
 function switchTab(tabName) {
-  // Hide all content
-  document.querySelectorAll(".tab-content").forEach((content) => {
-    content.classList.add("hidden")
+  const allContents = document.querySelectorAll(".tab-content")
+  const targetContent = document.getElementById(`content-${tabName}`)
+
+  // Fade out current content
+  allContents.forEach((content) => {
+    if (!content.classList.contains("hidden")) {
+      content.style.opacity = "0"
+      content.style.transform = "translateY(-10px)"
+      setTimeout(() => {
+        content.classList.add("hidden")
+        content.style.opacity = ""
+        content.style.transform = ""
+      }, 250)
+    }
   })
 
   // Reset all tab buttons
@@ -53,13 +128,25 @@ function switchTab(tabName) {
     button.classList.add("border-transparent", "text-gray-400")
   })
 
-  // Show selected content
-  document.getElementById(`content-${tabName}`).classList.remove("hidden")
+  // Fade in new content with slide effect
+  setTimeout(() => {
+    targetContent.classList.remove("hidden")
+    targetContent.style.opacity = "0"
+    targetContent.style.transform = "translateY(10px)"
+    targetContent.style.transition = "opacity 0.4s ease-out, transform 0.4s ease-out"
+
+    requestAnimationFrame(() => {
+      targetContent.style.opacity = "1"
+      targetContent.style.transform = "translateY(0)"
+    })
+  }, 250)
 
   // Highlight selected tab
   const activeTab = document.getElementById(`tab-${tabName}`)
-  activeTab.classList.add("border-orange-500", "text-orange-500")
-  activeTab.classList.remove("border-transparent", "text-gray-400")
+  if (activeTab) {
+    activeTab.classList.add("border-orange-500", "text-orange-500")
+    activeTab.classList.remove("border-transparent", "text-gray-400")
+  }
 }
 
 // Load Project Information
@@ -103,13 +190,13 @@ function displayChangelogs() {
 
   container.innerHTML = versions
     .map(
-      (version) => `
-    <div class="bg-gray-800 rounded-lg p-6 hover:bg-gray-750 transition">
+      (version, index) => `
+    <div class="bg-gray-800 rounded-lg p-6 hover:bg-gray-750 hover:shadow-lg transition-all duration-300 fade-in" style="animation-delay: ${index * 0.1}s">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
         <h3 class="text-xl font-semibold text-orange-400">${escapeHtml(version.name)}</h3>
         <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
-          <span class="px-3 py-1 bg-gray-700 rounded-full text-sm">${escapeHtml(version.version_number)}</span>
-          <span class="px-3 py-1 bg-blue-600 rounded-full text-sm">${escapeHtml(version.game_versions.join(", "))}</span>
+          <span class="px-3 py-1 bg-gray-700 rounded-full text-sm hover:bg-gray-600 transition-colors">${escapeHtml(version.version_number)}</span>
+          <span class="px-3 py-1 bg-blue-600 rounded-full text-sm hover:bg-blue-500 transition-colors">${escapeHtml(version.game_versions.join(", "))}</span>
         </div>
       </div>
       <div class="flex flex-wrap gap-4 text-sm text-gray-400 mb-3">
@@ -124,6 +211,8 @@ function displayChangelogs() {
   `,
     )
     .join("")
+
+  addFadeInAnimations()
 }
 
 // Display Latest Version
@@ -161,7 +250,7 @@ function displayAllVersions() {
   container.innerHTML = versions
     .map(
       (version) => `
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-gray-700 rounded-lg p-4 hover:bg-gray-600 transition">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-gray-700 rounded-lg p-4 hover:bg-gray-600 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]">
       <div class="flex-1">
         <p class="font-semibold">${escapeHtml(version.name)}</p>
         <p class="text-sm text-gray-400">${escapeHtml(version.version_number)} • ${escapeHtml(version.game_versions.join(", "))}</p>
@@ -171,7 +260,7 @@ function displayAllVersions() {
         </p>
       </div>
       <button onclick='downloadVersion(${JSON.stringify(version).replace(/'/g, "&#39;")})' 
-              class="mt-3 sm:mt-0 px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg transition">
+              class="mt-3 sm:mt-0 px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5">
         Download
       </button>
     </div>
@@ -271,4 +360,59 @@ function escapeHtml(text) {
   const div = document.createElement("div")
   div.textContent = text
   return div.innerHTML
+}
+
+async function loadGallery() {
+  try {
+    const response = await fetch(`${API_BASE}/project/${PROJECT_ID}`)
+    const data = await response.json()
+
+    displayGallery(data.gallery)
+  } catch (error) {
+    console.error("Error loading gallery:", error)
+    document.getElementById("gallery-grid").innerHTML =
+      '<p class="text-center text-red-400 col-span-full">Error loading gallery.</p>'
+  }
+}
+
+function displayGallery(gallery) {
+  const container = document.getElementById("gallery-grid")
+
+  if (!gallery || gallery.length === 0) {
+    container.innerHTML = '<p class="text-center text-gray-400 col-span-full">No images available.</p>'
+    return
+  }
+
+  container.innerHTML = gallery
+    .map(
+      (image, index) => `
+      <div class="bg-gray-800 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer fade-in" 
+           style="animation-delay: ${index * 0.1}s"
+           onclick="openLightbox('${image.url}')">
+        <img src="${image.url}" 
+             alt="${escapeHtml(image.title || "Gallery image")}" 
+             class="w-full h-48 sm:h-64 object-cover"
+             loading="lazy" />
+        ${image.title ? `<div class="p-3 text-center text-sm text-gray-300">${escapeHtml(image.title)}</div>` : ""}
+      </div>
+    `,
+    )
+    .join("")
+
+  addFadeInAnimations()
+}
+
+function openLightbox(imageUrl) {
+  const lightbox = document.getElementById("lightbox")
+  const lightboxImg = document.getElementById("lightbox-img")
+
+  lightboxImg.src = imageUrl
+  lightbox.classList.remove("hidden")
+  document.body.style.overflow = "hidden"
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById("lightbox")
+  lightbox.classList.add("hidden")
+  document.body.style.overflow = "auto"
 }
