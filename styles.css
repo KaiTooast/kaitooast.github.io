@@ -72,7 +72,7 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(15px);
   }
   to {
     opacity: 1;
@@ -83,7 +83,7 @@
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(-15px);
   }
   to {
     opacity: 1;
@@ -94,7 +94,7 @@
 @keyframes slideInFromRight {
   from {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateX(15px);
   }
   to {
     opacity: 1;
@@ -102,68 +102,263 @@
   }
 }
 
+@keyframes tabFadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+}
+
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes tabSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes tabSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes lightboxFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lightboxFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Improved main tab animations for smoother transitions */
+@keyframes mainTabFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.98);
+  }
+}
+
+@keyframes mainTabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.main-tab-fade-out {
+  animation: mainTabFadeOut 0.3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.main-tab-fade-in {
+  animation: mainTabFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Improved animation classes for smoother transitions */
+.tab-fade-out {
+  animation: tabFadeOut 0.25s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.tab-fade-in {
+  animation: tabFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.tab-slide-out {
+  animation: tabSlideOut 0.25s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.tab-slide-in {
+  animation: tabSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.lightbox-fade-in {
+  animation: lightboxFadeIn 0.2s ease-out forwards;
+}
+
+.lightbox-fade-out {
+  animation: lightboxFadeOut 0.2s ease-out forwards;
+}
+
 .animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .fade-in {
   opacity: 0;
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .fade-in-visible {
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .slide-in {
-  animation: slideIn 0.5s ease-out forwards;
+  animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 /* Smooth transitions for tab content */
 .tab-content,
 .main-tab-content {
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  transform: translateZ(0);
 }
 
-/* Mobile menu animation */
-#mobile-menu {
-  animation: fadeIn 0.3s ease-out;
-}
-
-/* Logo animation with slight delay */
-.logo-container {
-  animation: slideInFromRight 0.8s ease-out 0.2s both;
-}
-
-/* Smooth transitions for all interactive elements */
+/* Smooth transitions for all interactive elements with better easing */
 button,
 a {
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Hover effect for cards */
+/* Enhanced hover effect for cards with smoother animation */
 .bg-gray-800:hover,
 .bg-gray-700:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
-/* Added responsive improvements for mobile */
+/* Improved gallery image container with proper aspect ratio */
+.gallery-image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 75%; /* 4:3 aspect ratio for better image display */
+  overflow: hidden;
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.gallery-image-display {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gallery-card:hover .gallery-image-display {
+  transform: scale(1.08);
+}
+
+/* Improved lightbox styling for better mobile support */
+#lightbox {
+  backdrop-filter: blur(8px);
+}
+
+#lightbox-img {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  max-width: 90vw;
+  max-height: 85vh;
+  min-width: 60vw;
+  min-height: 50vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+
+#lightbox-title {
+  max-width: 90vw;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+/* Better responsive sizing for different screen sizes */
 @media (max-width: 640px) {
-  .text-5xl {
-    font-size: 2.5rem;
+  .gallery-image-wrapper {
+    padding-bottom: 85%; /* Slightly taller for mobile */
   }
 
-  .text-3xl {
-    font-size: 1.75rem;
+  /* Adjusted mobile lightbox sizing for better display */
+  #lightbox-img {
+    max-height: 80vh;
+    max-width: 95vw;
+    min-width: 85vw;
+    min-height: 40vh;
   }
 
-  .text-2xl {
-    font-size: 1.5rem;
+  #lightbox-title {
+    font-size: 0.95rem;
+    padding: 0 1rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .gallery-image-wrapper {
+    padding-bottom: 70%; /* Optimized for tablets */
   }
 
-  /* Ensure logo doesn't overlap with mobile menu button */
-  .logo-container {
-    top: 1rem;
-    right: 1rem;
+  /* Added tablet-specific lightbox sizing */
+  #lightbox-img {
+    min-width: 70vw;
+    min-height: 55vh;
   }
+}
+
+@media (min-width: 1025px) {
+  .gallery-image-wrapper {
+    padding-bottom: 65%; /* Wider aspect for desktop */
+  }
+
+  /* Improved desktop lightbox sizing for larger display */
+  #lightbox-img {
+    max-width: 85vw;
+    max-height: 90vh;
+    min-width: 65vw;
+    min-height: 60vh;
+  }
+}
+
+/* Force scrollbar to always be visible to prevent layout shift during animations */
+html {
+  overflow-y: scroll;
+}
+
+body {
+  min-height: 100vh;
 }

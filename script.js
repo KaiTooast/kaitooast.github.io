@@ -5,6 +5,7 @@ const PROJECTS = {
     id: "netherstuff",
     name: "NetherStuff",
     url: "https://modrinth.com/mod/netherstuff",
+
   },
   "end-reimagined": {
     id: "end-reimagined",
