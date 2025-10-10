@@ -1,11 +1,10 @@
 // Modrinth API Configuration
 const API_BASE = "https://api.modrinth.com/v2" // Declare API_BASE variable
 const PROJECTS = {
-  // --- CHANGE 1: Update the key and id/name/url for the project ---
-  "netherstuff": {
-    id: "netherstuff",
-    name: "NetherStuff",
-    url: "https://modrinth.com/mod/netherstuff", // Assuming the Modrinth slug is also updated
+  "new-nether-stuff": {
+    id: "new-nether-stuff",
+    name: "New Nether Stuff",
+    url: "https://modrinth.com/mod/new-nether-stuff",
   },
   "end-reimagined": {
     id: "end-reimagined",
@@ -13,9 +12,8 @@ const PROJECTS = {
     url: "https://modrinth.com/mod/end-reimagined",
   },
 }
-// Somethign is not working
-// --- CHANGE 2: Update the initial project ID ---
-let currentProjectId = "netherstuff"
+
+let currentProjectId = "new-nether-stuff"
 let versions = []
 let projectData = null
 
