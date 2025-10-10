@@ -12,7 +12,7 @@ const PROJECTS = {
     url: "https://modrinth.com/mod/end-reimagined",
   },
 }
-
+// Somethign is not working
 let currentProjectId = "new-nether-stuff"
 let versions = []
 let projectData = null
