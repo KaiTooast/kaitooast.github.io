@@ -1,13 +1,24 @@
 // Modrinth API Configuration
-const PROJECT_ID = "new-nether-stuff"
-const API_BASE = "https://api.modrinth.com/v2"
+const API_BASE = "https://api.modrinth.com/v2" // Declare API_BASE variable
+const PROJECTS = {
+  netherstuff: {
+    id: "netherstuff",
+    name: "NetherStuff",
+    url: "https://modrinth.com/mod/netherstuff",
+  },
+  "end-reimagined": {
+    id: "end-reimagined",
+    name: "End Reimagined",
+    url: "https://modrinth.com/mod/end-reimagined",
+  },
+}
+
+let currentProjectId = "netherstuff"
+let versions = []
+let projectData = null
 
 // Import or declare the marked variable before using it
 const marked = window.marked || null
-
-// State
-let versions = []
-let projectData = null
 
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
@@ -24,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initMobileMenu()
   addFadeInAnimations()
   loadGallery()
+  setupProjectSelectors()
 })
 
 function initMobileMenu() {
@@ -66,42 +78,40 @@ function switchMainTab(tabName) {
   const allContents = document.querySelectorAll(".main-tab-content")
   const targetContent = document.getElementById(`main-content-${tabName}`)
 
-  // Fade out current content
-  allContents.forEach((content) => {
-    if (!content.classList.contains("hidden")) {
-      content.style.opacity = "0"
-      content.style.transform = "translateX(-20px)"
-      setTimeout(() => {
-        content.classList.add("hidden")
-        content.style.opacity = ""
-        content.style.transform = ""
-      }, 300)
-    }
-  })
+  // Find currently visible content
+  const currentContent = Array.from(allContents).find((content) => !content.classList.contains("hidden"))
 
-  // Update tab buttons
+  // Update tab buttons immediately
   document.querySelectorAll(".main-tab-button").forEach((button) => {
     button.classList.remove("border-purple-500", "text-purple-500")
     button.classList.add("border-transparent", "text-gray-400")
   })
 
-  // Fade in new content
-  setTimeout(() => {
-    targetContent.classList.remove("hidden")
-    targetContent.style.opacity = "0"
-    targetContent.style.transform = "translateX(20px)"
-    targetContent.style.transition = "opacity 0.4s ease-out, transform 0.4s ease-out"
-
-    requestAnimationFrame(() => {
-      targetContent.style.opacity = "1"
-      targetContent.style.transform = "translateX(0)"
-    })
-  }, 300)
-
   const activeTab = document.getElementById(`main-tab-${tabName}`)
   if (activeTab) {
     activeTab.classList.add("border-purple-500", "text-purple-500")
     activeTab.classList.remove("border-transparent", "text-gray-400")
+  }
+
+  // If clicking the same tab, do nothing
+  if (currentContent === targetContent) return
+
+  if (currentContent) {
+    currentContent.classList.add("main-tab-fade-out")
+
+    setTimeout(() => {
+      currentContent.classList.add("hidden")
+      currentContent.classList.remove("main-tab-fade-out")
+
+      targetContent.classList.remove("hidden")
+      targetContent.classList.add("main-tab-fade-in")
+
+      setTimeout(() => {
+        targetContent.classList.remove("main-tab-fade-in")
+      }, 500)
+    }, 300)
+  } else {
+    targetContent.classList.remove("hidden")
   }
 }
 
@@ -109,15 +119,13 @@ function switchTab(tabName) {
   const allContents = document.querySelectorAll(".tab-content")
   const targetContent = document.getElementById(`content-${tabName}`)
 
-  // Fade out current content
   allContents.forEach((content) => {
     if (!content.classList.contains("hidden")) {
-      content.style.opacity = "0"
-      content.style.transform = "translateY(-10px)"
+      content.classList.add("tab-slide-out")
+
       setTimeout(() => {
         content.classList.add("hidden")
-        content.style.opacity = ""
-        content.style.transform = ""
+        content.classList.remove("tab-slide-out")
       }, 250)
     }
   })
@@ -128,17 +136,13 @@ function switchTab(tabName) {
     button.classList.add("border-transparent", "text-gray-400")
   })
 
-  // Fade in new content with slide effect
   setTimeout(() => {
     targetContent.classList.remove("hidden")
-    targetContent.style.opacity = "0"
-    targetContent.style.transform = "translateY(10px)"
-    targetContent.style.transition = "opacity 0.4s ease-out, transform 0.4s ease-out"
+    targetContent.classList.add("tab-slide-in")
 
-    requestAnimationFrame(() => {
-      targetContent.style.opacity = "1"
-      targetContent.style.transform = "translateY(0)"
-    })
+    setTimeout(() => {
+      targetContent.classList.remove("tab-slide-in")
+    }, 400)
   }, 250)
 
   // Highlight selected tab
@@ -152,20 +156,52 @@ function switchTab(tabName) {
 // Load Project Information
 async function loadProjectInfo() {
   try {
-    const response = await fetch(`${API_BASE}/project/${PROJECT_ID}`)
+    const response = await fetch(`${API_BASE}/project/${currentProjectId}`)
     projectData = await response.json()
 
     document.getElementById("mod-description").textContent = projectData.description
+
+    displayProjectStatus(projectData.status)
   } catch (error) {
     console.error("Error loading project information:", error)
     document.getElementById("mod-description").textContent = "Error loading mod information. Please try again later."
   }
 }
 
+function displayProjectStatus(status) {
+  const statusContainer = document.getElementById("project-status")
+  if (!statusContainer) return
+
+  let statusText = ""
+  let statusClass = ""
+  let statusIcon = ""
+
+  if (status === "archived") {
+    statusText = "Archived"
+    statusClass = "bg-gray-600 text-gray-200"
+    statusIcon = "📦"
+  } else if (status === "approved" || status === "published") {
+    statusText = "Active & Updated"
+    statusClass = "bg-green-600 text-white"
+    statusIcon = "✓"
+  } else {
+    statusText = "In Development"
+    statusClass = "bg-blue-600 text-white"
+    statusIcon = "🔨"
+  }
+
+  statusContainer.innerHTML = `
+    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusClass} animate-fade-in">
+      <span class="mr-1.5">${statusIcon}</span>
+      ${statusText}
+    </span>
+  `
+}
+
 // Load Versions
 async function loadVersions() {
   try {
-    const response = await fetch(`${API_BASE}/project/${PROJECT_ID}/version`)
+    const response = await fetch(`${API_BASE}/project/${currentProjectId}/version`)
     versions = await response.json()
 
     displayChangelogs()
@@ -364,7 +400,7 @@ function escapeHtml(text) {
 
 async function loadGallery() {
   try {
-    const response = await fetch(`${API_BASE}/project/${PROJECT_ID}`)
+    const response = await fetch(`${API_BASE}/project/${currentProjectId}`)
     const data = await response.json()
 
     displayGallery(data.gallery)
@@ -386,14 +422,16 @@ function displayGallery(gallery) {
   container.innerHTML = gallery
     .map(
       (image, index) => `
-      <div class="bg-gray-800 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer fade-in" 
-           style="animation-delay: ${index * 0.1}s"
-           onclick="openLightbox('${image.url}')">
-        <img src="${image.url}" 
-             alt="${escapeHtml(image.title || "Gallery image")}" 
-             class="w-full h-48 sm:h-64 object-cover"
-             loading="lazy" />
-        ${image.title ? `<div class="p-3 text-center text-sm text-gray-300">${escapeHtml(image.title)}</div>` : ""}
+      <div class="bg-gray-800 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] cursor-pointer fade-in gallery-card" 
+           style="animation-delay: ${index * 0.08}s"
+           onclick="openLightbox('${image.url}', '${escapeHtml(image.title || "Gallery image").replace(/'/g, "&#39;")}')">
+        <div class="gallery-image-wrapper">
+          <img src="${image.url}" 
+               alt="${escapeHtml(image.title || "Gallery image")}" 
+               class="gallery-image-display"
+               loading="lazy" />
+        </div>
+        ${image.title ? `<div class="p-4 text-center text-sm text-gray-300 font-medium">${escapeHtml(image.title)}</div>` : ""}
       </div>
     `,
     )
@@ -402,17 +440,63 @@ function displayGallery(gallery) {
   addFadeInAnimations()
 }
 
-function openLightbox(imageUrl) {
+function openLightbox(imageUrl, imageTitle = "") {
   const lightbox = document.getElementById("lightbox")
   const lightboxImg = document.getElementById("lightbox-img")
+  const lightboxTitle = document.getElementById("lightbox-title")
 
   lightboxImg.src = imageUrl
+  if (lightboxTitle && imageTitle) {
+    lightboxTitle.textContent = imageTitle
+    lightboxTitle.classList.remove("hidden")
+  } else if (lightboxTitle) {
+    lightboxTitle.classList.add("hidden")
+  }
+
   lightbox.classList.remove("hidden")
+  lightbox.classList.add("lightbox-fade-in")
   document.body.style.overflow = "hidden"
 }
 
 function closeLightbox() {
   const lightbox = document.getElementById("lightbox")
-  lightbox.classList.add("hidden")
-  document.body.style.overflow = "auto"
+  lightbox.classList.add("lightbox-fade-out")
+
+  setTimeout(() => {
+    lightbox.classList.add("hidden")
+    lightbox.classList.remove("lightbox-fade-in", "lightbox-fade-out")
+    document.body.style.overflow = "auto"
+  }, 200)
+}
+
+function switchProject(projectId) {
+  if (currentProjectId === projectId) return
+
+  currentProjectId = projectId
+  const project = PROJECTS[projectId]
+
+  // Update project title and link
+  document.querySelector("#main-content-project h2").textContent = project.name
+  document.querySelector("#main-content-project a").href = project.url
+
+  // Update project selector
+  document.querySelectorAll(".project-selector-btn").forEach((btn) => {
+    btn.classList.remove("bg-purple-600", "text-white")
+    btn.classList.add("bg-gray-700", "text-gray-300")
+  })
+  document.getElementById(`project-${projectId}`).classList.remove("bg-gray-700", "text-gray-300")
+  document.getElementById(`project-${projectId}`).classList.add("bg-purple-600", "text-white")
+
+  // Reload all data
+  loadProjectInfo()
+  loadVersions()
+  loadGallery()
+}
+
+function setupProjectSelectors() {
+  document.querySelectorAll(".project-selector-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchProject(btn.dataset.projectId)
+    })
+  })
 }
