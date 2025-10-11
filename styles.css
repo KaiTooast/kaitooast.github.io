@@ -68,6 +68,42 @@
   top: 0.1em;
 }
 
+/* Added version item styling with left border stripe */
+.version-item {
+  position: relative;
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+
+/* Updated changelog title color from orange to white for better contrast */
+.version-item h3 {
+  color: #ffffff;
+}
+
+/* Changed changelog headings to white and removed blue border */
+.changelog-content h1,
+.changelog-content h2,
+.changelog-content h3 {
+  color: #ffffff !important;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.changelog-content h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.changelog-content h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.changelog-content h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {
@@ -361,4 +397,14 @@ html {
 
 body {
   min-height: 100vh;
+}
+
+/* Added styles for refresh button disabled state */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button:disabled:hover {
+  transform: none;
 }
