@@ -5,7 +5,6 @@ const PROJECTS = {
     id: "netherstuff",
     name: "NetherStuff",
     url: "https://modrinth.com/mod/netherstuff",
-
   },
   "end-reimagined": {
     id: "end-reimagined",
@@ -37,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
   addFadeInAnimations()
   loadGallery()
   setupProjectSelectors()
+  document.getElementById("refresh-btn").addEventListener("click", refreshModData)
 })
 
 function initMobileMenu() {
@@ -226,11 +226,14 @@ function displayChangelogs() {
   }
 
   container.innerHTML = versions
-    .map(
-      (version, index) => `
-    <div class="bg-gray-800 rounded-lg p-6 hover:bg-gray-750 hover:shadow-lg transition-all duration-300 fade-in" style="animation-delay: ${index * 0.1}s">
+    .map((version, index) => {
+      const versionType = version.version_type || "release"
+      const stripeColor = getStripeColor(versionType)
+
+      return `
+    <div class="bg-gray-800 rounded-lg p-6 hover:bg-gray-750 hover:shadow-lg transition-all duration-300 fade-in version-item" style="animation-delay: ${index * 0.1}s; border-left: 4px solid ${stripeColor}">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
-        <h3 class="text-xl font-semibold text-orange-400">${escapeHtml(version.name)}</h3>
+        <h3 class="text-xl font-semibold text-white">${escapeHtml(version.name)}</h3>
         <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
           <span class="px-3 py-1 bg-gray-700 rounded-full text-sm hover:bg-gray-600 transition-colors">${escapeHtml(version.version_number)}</span>
           <span class="px-3 py-1 bg-blue-600 rounded-full text-sm hover:bg-blue-500 transition-colors">${escapeHtml(version.game_versions.join(", "))}</span>
@@ -245,14 +248,26 @@ function displayChangelogs() {
         ${formatChangelog(version.changelog)}
       </div>
     </div>
-  `,
-    )
+  `
+    })
     .join("")
 
   addFadeInAnimations()
 }
 
-// Display Latest Version
+function getStripeColor(versionType) {
+  switch (versionType) {
+    case "alpha":
+      return "#ef4444" // Red
+    case "beta":
+      return "#f97316" // Orange
+    case "release":
+      return "#22c55e" // Green
+    default:
+      return "#22c55e" // Default to green
+  }
+}
+
 function displayLatestVersion() {
   const container = document.getElementById("latest-version-info")
   const button = document.getElementById("download-latest-btn")
@@ -285,9 +300,12 @@ function displayAllVersions() {
   }
 
   container.innerHTML = versions
-    .map(
-      (version) => `
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-gray-700 rounded-lg p-4 hover:bg-gray-600 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]">
+    .map((version) => {
+      const versionType = version.version_type || "release"
+      const stripeColor = getStripeColor(versionType)
+
+      return `
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-gray-700 rounded-lg p-4 hover:bg-gray-600 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]" style="border-left: 4px solid ${stripeColor}">
       <div class="flex-1">
         <p class="font-semibold">${escapeHtml(version.name)}</p>
         <p class="text-sm text-gray-400">${escapeHtml(version.version_number)} • ${escapeHtml(version.game_versions.join(", "))}</p>
@@ -301,8 +319,8 @@ function displayAllVersions() {
         Download
       </button>
     </div>
-  `,
-    )
+  `
+    })
     .join("")
 }
 
@@ -499,5 +517,43 @@ function setupProjectSelectors() {
     btn.addEventListener("click", () => {
       switchProject(btn.dataset.projectId)
     })
+  })
+}
+
+function refreshModData() {
+  const refreshBtn = document.getElementById("refresh-btn")
+  const refreshIcon = refreshBtn.querySelector("svg")
+
+  // Add spinning animation to the refresh icon
+  refreshIcon.classList.add("animate-spin")
+  refreshBtn.disabled = true
+
+  // Show loading state in all sections
+  document.getElementById("changelogs-list").innerHTML = `
+    <div class="text-center text-gray-400">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+      <p class="mt-2">Refreshing data...</p>
+    </div>
+  `
+
+  document.getElementById("versions-list").innerHTML = `
+    <div class="text-center text-gray-400">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+      <p class="mt-2">Refreshing versions...</p>
+    </div>
+  `
+
+  document.getElementById("gallery-grid").innerHTML = `
+    <div class="text-center text-gray-400 col-span-full">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+      <p class="mt-2">Refreshing gallery...</p>
+    </div>
+  `
+
+  // Reload all data
+  Promise.all([loadProjectInfo(), loadVersions(), loadGallery()]).finally(() => {
+    // Remove spinning animation and re-enable button
+    refreshIcon.classList.remove("animate-spin")
+    refreshBtn.disabled = false
   })
 }
