@@ -12,7 +12,7 @@ const PROJECTS = {
     url: "https://modrinth.com/mod/end-reimagined",
   },
 }
-// fix
+
 let currentProjectId = "netherstuff"
 let versions = []
 let projectData = null
@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadGallery()
   setupProjectSelectors()
   document.getElementById("refresh-btn").addEventListener("click", refreshModData)
+  initFeedbackForm()
 })
 
 function initMobileMenu() {
@@ -92,6 +93,11 @@ function switchMainTab(tabName) {
   if (activeTab) {
     activeTab.classList.add("border-purple-500", "text-purple-500")
     activeTab.classList.remove("border-transparent", "text-gray-400")
+  }
+
+  const floatingFeedbackBtn = document.getElementById("floating-feedback-btn")
+  if (floatingFeedbackBtn) {
+    floatingFeedbackBtn.classList.remove("hidden")
   }
 
   // If clicking the same tab, do nothing
@@ -556,4 +562,129 @@ function refreshModData() {
     refreshIcon.classList.remove("animate-spin")
     refreshBtn.disabled = false
   })
+}
+
+function initFeedbackForm() {
+  const form = document.getElementById("feedback-form")
+  if (form) {
+    form.addEventListener("submit", handleFeedbackSubmit)
+  }
+}
+
+async function handleFeedbackSubmit(event) {
+  event.preventDefault()
+
+  const submitBtn = document.getElementById("feedback-submit-btn")
+  const statusDiv = document.getElementById("feedback-status")
+
+  // Get form values
+  const modId = document.getElementById("feedback-mod").value
+  const title = document.getElementById("feedback-title").value.trim()
+  const message = document.getElementById("feedback-message").value.trim()
+  const discord = document.getElementById("feedback-discord").value.trim()
+  const twitter = document.getElementById("feedback-twitter").value.trim()
+
+  // Validate required fields
+  if (!modId || !title || !message) {
+    showFeedbackStatus("Please fill in all required fields.", "error")
+    return
+  }
+
+  // Disable submit button
+  submitBtn.disabled = true
+  submitBtn.textContent = "Sending..."
+
+  // Get mod name
+  const modName = PROJECTS[modId]?.name || modId
+
+  // Determine if anonymous
+  const isAnonymous = !discord && !twitter
+  const contactInfo = isAnonymous
+    ? "Anonymous"
+    : [discord && `Discord: ${discord}`, twitter && `Twitter: ${twitter}`].filter(Boolean).join("\n")
+
+  // Create Discord embed
+  const embed = {
+    title: `📝 New Feedback: ${title}`,
+    description: message,
+    color: modId === "netherstuff" ? 0x9333ea : 0x3b82f6, // Purple for NetherStuff, Blue for End Reimagined
+    fields: [
+      {
+        name: "🎮 Mod",
+        value: modName,
+        inline: true,
+      },
+      {
+        name: "👤 Submitted By",
+        value: contactInfo,
+        inline: true,
+      },
+      {
+        name: "📅 Date",
+        value: new Date().toLocaleString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        inline: false,
+      },
+    ],
+    footer: {
+      text: "Feedback System",
+    },
+    timestamp: new Date().toISOString(),
+  }
+
+  // Send to Discord webhook
+  try {
+    const response = await fetch(
+      "https://discord.com/api/webhooks/1427007028798296134/mm5wrz182lr7NvWobqd7ufRvm3RZCAFmAKXcdTI6evNXICPrs3RroN4qD08uFJ0OwO-N",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          embeds: [embed],
+        }),
+      },
+    )
+
+    if (response.ok || response.status === 204) {
+      showFeedbackStatus("✅ Thank you! Your feedback has been sent successfully.", "success")
+      resetFeedbackForm()
+    } else {
+      throw new Error("Failed to send feedback")
+    }
+  } catch (error) {
+    console.error("Error sending feedback:", error)
+    showFeedbackStatus("❌ Failed to send feedback. Please try again later.", "error")
+  } finally {
+    submitBtn.disabled = false
+    submitBtn.textContent = "Send Feedback"
+  }
+}
+
+function showFeedbackStatus(message, type) {
+  const statusDiv = document.getElementById("feedback-status")
+  statusDiv.textContent = message
+  statusDiv.classList.remove("hidden", "bg-green-600", "bg-red-600")
+
+  if (type === "success") {
+    statusDiv.classList.add("bg-green-600", "text-white")
+  } else {
+    statusDiv.classList.add("bg-red-600", "text-white")
+  }
+
+  // Hide after 5 seconds
+  setTimeout(() => {
+    statusDiv.classList.add("hidden")
+  }, 5000)
+}
+
+function resetFeedbackForm() {
+  document.getElementById("feedback-form").reset()
+  document.getElementById("feedback-status").classList.add("hidden")
 }
