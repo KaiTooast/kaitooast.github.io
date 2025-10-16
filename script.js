@@ -1,7 +1,7 @@
 // Modrinth API Configuration
 const API_BASE = "https://api.modrinth.com/v2"
 const MODRINTH_USER = "KaiTooast"
-
+// Update the API
 let currentProjectId = null
 let userProjects = []
 let filteredProjects = []
