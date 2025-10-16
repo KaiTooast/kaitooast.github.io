@@ -1,3 +1,157 @@
+/* Added light mode color scheme */
+:root {
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-tertiary: #374151;
+  --bg-hover: #2d3748;
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --text-tertiary: #9ca3af;
+  --border-color: #4b5563;
+  --border-hover: #6b7280;
+}
+
+body.light-mode {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  --bg-hover: #e5e7eb;
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-tertiary: #6b7280;
+  --border-color: #d1d5db;
+  --border-hover: #9ca3af;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Override all hardcoded colors for light mode */
+body.light-mode {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-secondary) !important;
+}
+
+body.light-mode .bg-gray-900 {
+  background-color: var(--bg-primary) !important;
+}
+
+body.light-mode .bg-gray-800 {
+  background-color: var(--bg-secondary) !important;
+}
+
+body.light-mode .bg-gray-700 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+body.light-mode .bg-gray-750 {
+  background-color: var(--bg-hover) !important;
+}
+
+body.light-mode .bg-gray-600 {
+  background-color: #d1d5db !important;
+}
+
+body.light-mode .text-gray-200,
+body.light-mode .text-gray-300 {
+  color: var(--text-primary) !important;
+}
+
+body.light-mode .text-gray-400 {
+  color: var(--text-tertiary) !important;
+}
+
+body.light-mode .text-gray-500 {
+  color: var(--text-tertiary) !important;
+}
+
+body.light-mode .text-white {
+  color: var(--text-primary) !important;
+}
+
+body.light-mode .border-gray-700 {
+  border-color: var(--border-color) !important;
+}
+
+body.light-mode .border-gray-600 {
+  border-color: var(--border-hover) !important;
+}
+
+body.light-mode .border-gray-500 {
+  border-color: var(--border-hover) !important;
+}
+
+body.light-mode header {
+  background: linear-gradient(to right, #e5e7eb, #d1d5db, #e5e7eb) !important;
+}
+
+body.light-mode .changelog-content h1,
+body.light-mode .changelog-content h2,
+body.light-mode .changelog-content h3 {
+  color: var(--text-primary) !important;
+}
+
+body.light-mode .changelog-content code {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.light-mode .changelog-content pre {
+  background-color: var(--bg-tertiary) !important;
+}
+
+body.light-mode .changelog-content a {
+  color: #2563eb !important;
+}
+
+body.light-mode .changelog-content a:hover {
+  color: #1d4ed8 !important;
+}
+
+body.light-mode #mobile-menu {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+}
+
+body.light-mode #theme-toggle {
+  background-color: var(--bg-tertiary) !important;
+}
+
+body.light-mode #theme-toggle:hover {
+  background-color: var(--bg-hover) !important;
+}
+
+body.light-mode .animate-spin {
+  border-color: var(--border-color) !important;
+  border-bottom-color: #22c55e !important;
+}
+
+body.light-mode input[type="text"],
+body.light-mode input[type="search"] {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+body.light-mode input[type="text"]::placeholder,
+body.light-mode input[type="search"]::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+body.light-mode button {
+  color: var(--text-primary) !important;
+}
+
+body.light-mode .bg-gradient-to-r {
+  background: linear-gradient(to right, #d1d5db, #9ca3af) !important;
+}
+
+body.light-mode .bg-gradient-to-br {
+  background: linear-gradient(to bottom right, var(--bg-secondary), var(--bg-tertiary)) !important;
+}
+
 /* Icon styles using CSS pseudo-elements */
 .icon-date::before {
   content: "📅";
@@ -6,7 +160,7 @@
   font-style: normal;
   width: 1em;
   height: 1em;
-  background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
+  background: linear-gradient(135deg, var(--border-color) 0%, var(--border-hover) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -18,7 +172,7 @@
   margin-right: 0.25rem;
   font-weight: bold;
   font-size: 1.1em;
-  color: #10b981;
+  color: var(--text-primary);
 }
 
 .icon-loader::before {
@@ -26,7 +180,7 @@
   display: inline-block;
   margin-right: 0.25rem;
   font-weight: bold;
-  color: #3b82f6;
+  color: var(--bg-hover);
 }
 
 /* Alternative simple geometric icons */
@@ -50,7 +204,7 @@
   margin-right: 0.5rem;
   border-left: 0.4em solid transparent;
   border-right: 0.4em solid transparent;
-  border-top: 0.6em solid #10b981;
+  border-top: 0.6em solid var(--text-primary);
   position: relative;
   top: 0.15em;
 }
@@ -61,7 +215,7 @@
   width: 0.75em;
   height: 0.75em;
   margin-right: 0.375rem;
-  border: 2px solid #3b82f6;
+  border: 2px solid var(--bg-hover);
   border-radius: 2px;
   transform: rotate(45deg);
   position: relative;
@@ -73,18 +227,19 @@
   position: relative;
   border-left-width: 4px;
   border-left-style: solid;
+  border-left-color: var(--border-color);
 }
 
 /* Updated changelog title color from orange to white for better contrast */
 .version-item h3 {
-  color: #ffffff;
+  color: var(--text-secondary);
 }
 
 /* Changed changelog headings to white and removed blue border */
 .changelog-content h1,
 .changelog-content h2,
 .changelog-content h3 {
-  color: #ffffff !important;
+  color: var(--text-primary) !important;
   margin-top: 1.5rem;
   margin-bottom: 1rem;
 }
@@ -102,6 +257,112 @@
 .changelog-content h3 {
   font-size: 1.125rem;
   font-weight: 600;
+}
+
+/* Updated blockquote border color from orange to gray */
+.changelog-content blockquote {
+  border-left: 4px solid var(--border-color);
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-bottom: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+/* Enhanced badge container styling for better display */
+.modrinth-badges-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  align-items: center;
+}
+
+.modrinth-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.modrinth-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.badge-discord {
+  background-color: #5865f2;
+  color: white;
+}
+
+.badge-discord:hover {
+  background-color: #4752c4;
+}
+
+.badge-youtube {
+  background-color: #ff0000;
+  color: white;
+}
+
+.badge-youtube:hover {
+  background-color: #cc0000;
+}
+
+.badge-github {
+  background-color: #24292e;
+  color: white;
+}
+
+body.light-mode .badge-github {
+  background-color: #24292e;
+  color: white;
+}
+
+.badge-github:hover {
+  background-color: #1a1e22;
+}
+
+.badge-modrinth {
+  background-color: #1bd96a;
+  color: white;
+}
+
+.badge-modrinth:hover {
+  background-color: #17b558;
+}
+
+.badge-kofi {
+  background-color: #ff5e5b;
+  color: white;
+}
+
+.badge-kofi:hover {
+  background-color: #e54946;
+}
+
+.modrinth-badge svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* Changed main tab active colors from purple to gray */
+.main-tab-button.border-gray-500 {
+  border-color: var(--border-hover);
+  color: var(--text-secondary);
+}
+
+/* Changed tab active colors from orange to gray */
+.tab-button.border-gray-500 {
+  border-color: var(--border-hover);
+  color: var(--text-secondary);
 }
 
 /* Animations */
@@ -303,7 +564,7 @@ a {
   width: 100%;
   padding-bottom: 75%; /* 4:3 aspect ratio for better image display */
   overflow: hidden;
-  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   border-radius: 0.5rem 0.5rem 0 0;
 }
 
@@ -315,6 +576,8 @@ a {
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 .gallery-card:hover .gallery-image-display {
@@ -328,14 +591,14 @@ a {
 
 #lightbox-img {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-  max-width: 90vw;
-  max-height: 85vh;
-  min-width: 60vw;
-  min-height: 50vh;
+  max-width: 95vw;
+  max-height: 95vh;
   width: auto;
   height: auto;
   object-fit: contain;
   border-radius: 0.5rem;
+  image-rendering: high-quality;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 #lightbox-title {
@@ -350,12 +613,10 @@ a {
     padding-bottom: 85%; /* Slightly taller for mobile */
   }
 
-  /* Adjusted mobile lightbox sizing for better display */
+  /* Removed min-width/min-height constraints for better quality */
   #lightbox-img {
-    max-height: 80vh;
-    max-width: 95vw;
-    min-width: 85vw;
-    min-height: 40vh;
+    max-height: 90vh;
+    max-width: 98vw;
   }
 
   #lightbox-title {
@@ -369,10 +630,10 @@ a {
     padding-bottom: 70%; /* Optimized for tablets */
   }
 
-  /* Added tablet-specific lightbox sizing */
+  /* Removed min-width/min-height constraints for tablets */
   #lightbox-img {
-    min-width: 70vw;
-    min-height: 55vh;
+    max-width: 95vw;
+    max-height: 92vh;
   }
 }
 
@@ -381,12 +642,10 @@ a {
     padding-bottom: 65%; /* Wider aspect for desktop */
   }
 
-  /* Improved desktop lightbox sizing for larger display */
+  /* Removed min-width/min-height constraints for desktop */
   #lightbox-img {
-    max-width: 85vw;
-    max-height: 90vh;
-    min-width: 65vw;
-    min-height: 60vh;
+    max-width: 95vw;
+    max-height: 95vh;
   }
 }
 
@@ -407,4 +666,156 @@ button:disabled {
 
 button:disabled:hover {
   transform: none;
+}
+
+/* Added styles for Modrinth social media badges in descriptions */
+#full-description a {
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#full-description a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Badge container spacing */
+#full-description p:has(a[class*="inline-flex"]) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+
+/* Ensure badges don't break layout */
+#full-description a.inline-flex {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Updated color scheme to match Modrinth gray theme */
+.bg-gray-750 {
+  background-color: var(--bg-hover);
+}
+
+/* Smooth transitions for collapsible sections */
+#project-type-content,
+#sort-by-content {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 500px;
+  overflow: hidden;
+}
+
+#project-type-content.hidden,
+#sort-by-content.hidden {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Updated focus colors to green (Modrinth brand color) */
+input:focus,
+button:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: var(--bg-hover);
+}
+
+/* Custom radio button styling */
+input[type="radio"] {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+input[type="radio"]:checked {
+  border-color: var(--bg-hover);
+  background-color: var(--bg-hover);
+  box-shadow: inset 0 0 0 3px var(--bg-primary);
+}
+
+input[type="radio"]:hover {
+  border-color: var(--border-hover);
+}
+
+/* Project card hover effects */
+#projects-grid > div {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#projects-grid > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+/* Added sticky sidebar positioning for desktop */
+@media (min-width: 1024px) {
+  aside.lg\:sticky {
+    position: sticky;
+    top: 1rem;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
+
+  /* Custom scrollbar for sidebar */
+  aside.lg\:sticky::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  aside.lg\:sticky::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+    border-radius: 3px;
+  }
+
+  aside.lg\:sticky::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+  }
+
+  aside.lg\:sticky::-webkit-scrollbar-thumb:hover {
+    background: var(--border-hover);
+  }
+}
+
+/* Improved responsive layout for mobile */
+@media (max-width: 1023px) {
+  aside {
+    width: 100%;
+  }
+}
+
+/* Added statistics dashboard animation */
+#stats-dashboard > div {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+#stats-dashboard > div:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+#stats-dashboard > div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+#stats-dashboard > div:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+#stats-dashboard > div:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+/* Added analytics chart styling */
+#downloads-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+body.light-mode #downloads-canvas {
+  filter: brightness(0.95);
 }
